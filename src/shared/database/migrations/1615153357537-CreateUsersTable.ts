@@ -3,6 +3,8 @@ import {MigrationInterface, QueryRunner, Table} from "typeorm";
 export class CreateUsers1611106710110 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'); //Habilita a extensão para gerar o id automático no postgres
+
     await queryRunner.createTable(
       new Table ({
         name: 'users', //Cria a tabela users
@@ -55,6 +57,7 @@ export class CreateUsers1611106710110 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropTable('users'); //exclui a tabela users
+    await queryRunner.query('DROP EXTENSION "uuid-ossp"'); //Desabilita uuid automático
   }
 
 }

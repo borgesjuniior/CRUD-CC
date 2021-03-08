@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import AppError from '../shared/errors/AppError';
 import Address from '../models/Address';
 
 class AddressController {
   async index(req: Request, res: Response) {
     const results = await getRepository(Address).find();
+    if (results.length === 0) {
+      return res.json({ message: 'Nothing to show'});
+    }
+
     return res.json(results);
   }
 
@@ -37,21 +42,25 @@ class AddressController {
       return res.json(adressInfo);
 
     } catch (error) {
-      console.log(error)
-      res.send(500)
+      res.status(500).json({error: 'Enter a valid user id'})
     }
   }
 
   async update(req: Request, res: Response) {
     try {
-      const { id } = req.params
-
+      const { id } = req.params;
       const repository = getRepository(Address);
-      const addressUpdated = await repository.update(id, req.body);
+      const address = await repository.findOne({ id });
 
-      return res.status(200).json(addressUpdated);
+      if(!address) {
+        throw new AppError('Adress does not exists', 404)
+      }
+
+      const addressUpdated = await repository.update(id, req.body);
+      return res.status(200).json({message: 'Address has been updated', addressUpdated});
+
     } catch (error) {
-      console.log('error')
+      res.status(error.statusCode).json(error);
     }
   }
 
@@ -63,13 +72,13 @@ class AddressController {
       const address = await repository.findOne({id});
 
       if(!address) {
-        return res.status(404).json({ message: 'Address do not exists' });
+        throw new AppError('Address not found', 404);
       }
 
       await repository.delete({id});
       return res.json({ message: 'Delete address sucessfuly'});
     } catch (error) {
-      res.status(500).json({error});
+      res.status(error.statusCode).json(error);
     }
   }
 
