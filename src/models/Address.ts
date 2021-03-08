@@ -1,9 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import User from './User';
 
 @Entity('address')
 class Address {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  user_id: string;
+
+  @OneToOne(() => User)
+  @JoinColumn({name: 'user_id'})
+  user: string;
 
   @Column()
   address: string;

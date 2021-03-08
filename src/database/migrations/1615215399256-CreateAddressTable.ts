@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import {MigrationInterface, QueryRunner, Table, TableForeignKey} from "typeorm";
 
 export class CreateAddressTable1615215399256 implements MigrationInterface {
 
@@ -12,6 +12,11 @@ export class CreateAddressTable1615215399256 implements MigrationInterface {
           isPrimary: true,
           generationStrategy: 'uuid',
           default: 'uuid_generate_v4()',
+        },
+        {
+          name: 'user_id',
+          type: 'uuid',
+          isNullable: true,
         },
         {
           name: 'address',
@@ -50,9 +55,19 @@ export class CreateAddressTable1615215399256 implements MigrationInterface {
       ]
       })
     )
+
+    await queryRunner.createForeignKey('address', new TableForeignKey({
+      name: 'UserAddress',
+      columnNames: ['user_id'],
+      referencedColumnNames: ['id'],
+      referencedTableName: 'users',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    }))
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('address', 'UserAddress')
     await queryRunner.dropTable('address') //Deleta a tabela de endereços
   }
 
