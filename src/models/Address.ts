@@ -1,27 +1,27 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('users')
-class User {
+@Entity('address')
+class Address {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  name: string;
+  address: string;
 
   @Column()
-  phone: string;
+  number: string;
 
   @Column()
-  email: string;
+  complement: string;
 
   @Column()
-  age: number;
+  cep: number;
 
   @Column()
-  weight: number;
+  city: number;
 
   @Column()
-  ethnicity: string;
+  estate: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -31,4 +31,4 @@ class User {
 
 }
 
-export default User;
+export default Address;
