@@ -16,7 +16,7 @@ export class CreateAddressTable1615215399256 implements MigrationInterface {
         {
           name: 'user_id',
           type: 'uuid',
-          isNullable: true,
+          isNullable: false,
         },
         {
           name: 'address',
@@ -24,7 +24,7 @@ export class CreateAddressTable1615215399256 implements MigrationInterface {
         },
         {
           name: 'number',
-          type: 'varchar'
+          type: 'int'
         },
         {
           name: 'complement',

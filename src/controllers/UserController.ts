@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { json, Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import AppError from '../shared/errors/AppError';
 import User from '../models/User';
+import UserService from '../services/UserService';
 
 class UserController {
   async index(req: Request, res: Response) {
@@ -14,84 +14,45 @@ class UserController {
   }
 
   async create(req: Request, res: Response) {
-    try {
-      const {
-        name,
-        phone,
-        email,
-        age,
-        weight,
-        ethnicity
-      } = req.body;
+    const {
+      name,
+      phone,
+      email,
+      age,
+      weight,
+      ethnicity
+    } = req.body;
 
-      const repository = getRepository(User);
-      const userAlreadyExists = await repository.findOne({email});
+    const user = await UserService.create({
+      name,
+      phone,
+      email,
+      age,
+      weight,
+      ethnicity
+    })
 
-      if(userAlreadyExists) {
-        throw new AppError('Email already exists', 409);
-      }
 
-
-      const user = repository.create({
-        name,
-        phone,
-        email,
-        age,
-        weight,
-        ethnicity
-      })
-
-      await repository.save(user);
-
-      return res.json(user);
-
-    } catch (error) {
-      return res.status(error.statusCode).json(error);
-    }
+    return res.json(user);
   }
 
   async update(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const { email } = req.body;
-      const repository = getRepository(User);
-      const user = await repository.findOne({ id });
-      const EmailUsed = await repository.findOne({ email })
+    const { id } = req.params;
 
-      if(!user) {
-        throw new AppError('User not found', 404);
-      }
+    const user = await UserService.update(id, req.body);
 
-      if(EmailUsed) {
-        throw new AppError('Email already used', 409)
-      }
-
-      await repository.update(id, req.body);
-      const userUpdadted = await repository.findOne({ id });
-
-      return res.json({ message: 'User updated', userUpdadted});
-    } catch (error) {
-      return res.status(error.statusCode).json(error);
-    }
+    return res.json({
+      message: 'UserUpdated',
+      user
+    });
   }
 
   async delete(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
 
-      const repository = getRepository(User);
-      const user = await repository.findOne({id});
+    await UserService.delete(id);
 
-      if(!user) {
-        throw new AppError('User not found', 404);
-      }
-
-      await repository.delete({id});
-      return res.json({ message: 'Delete user sucessfuly'});
-
-    } catch (error) {
-      res.status(error.statusCode).json(error);
-    }
+    res.json({ message: 'User deleted'})
   }
 
 }

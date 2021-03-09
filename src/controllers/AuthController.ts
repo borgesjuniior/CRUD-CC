@@ -1,21 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
-import User from '../models/User';
-
+import AuthUserService from '../services/AuthUserService';
 class AuthController {
   async execute(req: Request, res: Response) {
-    const respository = getRepository(User);
     const { email } = req.body;
-    const user = await respository.findOne({ email });
-
-    if (!user) {
-      return res.json({message: 'Enter a valid e-mail'});
-    }
-
-    const token = sign({}, 'secret', {
-      expiresIn: '1d',
-    })
+    const { user, token } = await AuthUserService.authUser(email);
 
     return res.json({
       user,

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import AppError from '../shared/errors/AppError';
 import Address from '../models/Address';
+import AddressService from '../services/AddressService';
 
 class AddressController {
   async index(req: Request, res: Response) {
@@ -14,72 +15,49 @@ class AddressController {
   }
 
   async create(req: Request, res: Response) {
-    try {
-      const {
-        user_id,
-        address,
-        number,
-        complement,
-        cep,
-        city,
-        estate
-      } = req.body;
+    const {
+      user_id,
+      address,
+      number,
+      complement,
+      cep,
+      city,
+      estate
+    } = req.body;
 
-      const repository = getRepository(Address);
+    const addressInfo = await AddressService.create({
+      user_id,
+      address,
+      number,
+      complement,
+      cep,
+      city,
+      estate
+    })
 
-      const adressInfo = repository.create({
-        user_id,
-        address,
-        number,
-        complement,
-        cep,
-        city,
-        estate
-      })
-
-      await repository.save(adressInfo);
-
-      return res.json(adressInfo);
-
-    } catch (error) {
-      res.status(500).json({error: 'Enter a valid user id'})
-    }
+    return res.json(addressInfo);
   }
 
   async update(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const repository = getRepository(Address);
-      const address = await repository.findOne({ id });
+    const { id } = req.params;
 
-      if(!address) {
-        throw new AppError('Adress does not exists', 404)
-      }
+    const address = await AddressService.update(id, req.body)
 
-      const addressUpdated = await repository.update(id, req.body);
-      return res.status(200).json({message: 'Address has been updated', addressUpdated});
-
-    } catch (error) {
-      res.status(error.statusCode).json(error);
-    }
+    return res.json({
+      message: 'Address Updated',
+      address
+    }) ;
   }
 
   async delete(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
 
-      const repository = getRepository(Address);
-      const address = await repository.findOne({id});
+    const result = await AddressService.delete(id);
 
-      if(!address) {
-        throw new AppError('Address not found', 404);
-      }
-
-      await repository.delete({id});
-      return res.json({ message: 'Delete address sucessfuly'});
-    } catch (error) {
-      res.status(error.statusCode).json(error);
-    }
+    return res.json({
+      message: 'Delete address sucessfuly',
+      result
+    });
   }
 
 }

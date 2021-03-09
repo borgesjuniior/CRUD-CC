@@ -17,16 +17,16 @@ class Address {
   address: string;
 
   @Column()
-  number: string;
+  number: number;
 
   @Column()
   complement: string;
 
   @Column()
-  cep: number;
+  cep: string;
 
   @Column()
-  city: number;
+  city: string;
 
   @Column()
   estate: string;
