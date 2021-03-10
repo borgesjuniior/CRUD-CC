@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import AppError from '../shared/errors/AppError';
 import Address from '../models/Address';
 import AddressService from '../services/AddressService';
 
 class AddressController {
   async index(req: Request, res: Response) {
     const results = await getRepository(Address).find();
+
     if (results.length === 0) {
       return res.json({ message: 'Nothing to show'});
     }

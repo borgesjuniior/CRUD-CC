@@ -3,39 +3,35 @@ import Address from '../models/Address';
 import User from '../models/User';
 import AppError from '../shared/errors/AppError';
 
-class AddressService {
-  async create({
-    user_id,
-    address,
-    number,
-    complement,
-    cep,
-    city,
-    estate
-  }: any): Promise<Address> {
-  const userrepo = getRepository(User);
-  const user = await userrepo.find({ id: user_id});
+interface AddressProps {
+  user_id: string;
+  address: string;
+  number: number;
+  complement: string;
+  cep: string;
+  city: string;
+  estate: string;
 
-  if(user.length === 0) {
+}
+
+class AddressService {
+  async create(addresProps: AddressProps): Promise<Address> {
+  const userRepository= getRepository(User);
+  const user = await userRepository.findOne(addresProps.user_id);
+
+  if(!user) {
     throw new AppError('Enter a valid user Id')
   }
 
   const repository = getRepository(Address);
-  const addressInfo = repository.create({
-    user_id,
-    address,
-    number,
-    complement,
-    cep,
-    city,
-    estate
-  })
+  const addressInfo = repository.create(addresProps)
 
   await repository.save(addressInfo);
   return addressInfo;
+
   }
 
-  async update(id: string, addresProps: any): Promise<UpdateResult> {
+  async update(id: string, addresProps: AddressProps): Promise<UpdateResult> {
     const repository = getRepository(Address);
     const address = await repository.findOne({ id });
 
