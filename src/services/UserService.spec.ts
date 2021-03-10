@@ -43,28 +43,6 @@ describe('Crud users', () => {
     })).rejects.toBeInstanceOf(AppError)
   })
 
-  it('Should not to be able to create a user with the same e-mail', async () => {
-    const fakeUserService = new FakeUserService;
-
-    await fakeUserService.create({
-      name: 'Juníor',
-      phone: '12345678',
-      email: 'fulano1gmail.com',
-      age: 17,
-      ethnicity: 'pardo',
-      weight: 71.4
-    })
-
-    expect(fakeUserService.create({
-      name: 'Juníor',
-      phone: '12345678',
-      email: 'fulano1gmail.com',
-      age: 17,
-      ethnicity: 'pardo',
-      weight: 71.4
-    })).rejects.toBeInstanceOf(AppError)
-  })
-
 // Update
   it('should not to be able to update a invalid user', async () => {
     const fakeUserService = new FakeUserService;
@@ -94,7 +72,7 @@ describe('Crud users', () => {
       weight: 71.4
     })
 
-    await fakeUserService.update(`${user.id}`, {
+    const userUpdated = await fakeUserService.update(`${user.id}`, {
       name: 'Lívia',
       phone: '12345678',
       email: 'fulano1gmail.com',
@@ -103,7 +81,7 @@ describe('Crud users', () => {
       weight: 71.4
     })
 
-    expect(user).toHaveProperty('updated_at');
+    expect(userUpdated).toHaveProperty('updated_at');
 
   })
 
@@ -134,5 +112,33 @@ describe('Crud users', () => {
   })
 
 //delete
+
+  it('should not to be able to delete a nonexistent user', async () => {
+
+    const fakeUserService = new FakeUserService;
+    expect(
+      fakeUserService.delete('nonValid')
+    ).rejects.toBeInstanceOf(AppError);
+
+  })
+
+  it('should be able to delete a user', async () => {
+
+    const fakeUserService = new FakeUserService;
+
+    const user = await fakeUserService.create({
+      name: 'Juníor',
+      phone: '12345678',
+      email: 'fulano2gmail.com',
+      age: 17,
+      ethnicity: 'pardo',
+      weight: 71.4
+    })
+
+    expect(
+      fakeUserService.delete(`${user.id}`)
+    ).resolves.toBeTruthy() //must return []
+
+  })
 
 })

@@ -1,4 +1,3 @@
-import { getRepository } from 'typeorm';
 import User from '../../models/User';
 import AppError from '../../shared/errors/AppError';
 import { uuid } from 'uuidv4';
@@ -33,8 +32,8 @@ class UserService {
     user.phone = userProps.phone,
     user.age = userProps.age,
     user.weight = userProps.weight,
-    user.created_at = new Date(),
-    user.updated_at = new Date()
+    // user.created_at = new Date(),
+    // user.updated_at = new Date()
 
     this.Users.push(user);
 
@@ -69,11 +68,17 @@ class UserService {
 
   async delete(id: string) {
     const user = this.Users.find(user => user.id === id);
-    console.log(user);
 
     if(!user) {
       throw new AppError('User not found, enter a valid id', 404);
     }
+
+    const userIndex = this.Users.findIndex(user => user.id === id);
+
+    this.Users.splice(userIndex, 1);
+
+
+    return this.Users; //Como só há um registro o array retornará vazio
 
 
   }
