@@ -25,7 +25,7 @@ $ yarn dev:server ou $ npm run dev:server
 ```
 ## Configurando o banco de dados
 ### Antes de começar afetivamente testar as rotas é necessário que as tabelas no banco de dados estejam criadas
-Acesse o arquivo ormconig.json copie e coloque suas credenciais necessárias para a conexão com o banco
+Acesse o arquivo ormconfig.json copie e coloque suas credenciais necessárias para a conexão com o banco
 
 ````javascript
 {
