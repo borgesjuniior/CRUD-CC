@@ -77,8 +77,8 @@ describe('Crud users', () => {
       phone: '12345678',
       email: 'fulano1gmail.com',
       age: 17,
-      ethnicity: 'pardo',
-      weight: 71.4
+      ethnicity: 'branca',
+      weight: 63
     })
 
     expect(userUpdated).toHaveProperty('updated_at');

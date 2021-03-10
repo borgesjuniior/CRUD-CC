@@ -9,6 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
+// Middleware para tratação de erros globais da aplicação
+
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({

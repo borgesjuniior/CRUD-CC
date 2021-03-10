@@ -38,6 +38,7 @@ class AddressService {
 
   async update(id: string, addressProps: AddressProps): Promise<Address> {
     const address = this.address.find(address => address.id === id);
+    const userIndex = this.address.findIndex(id => id)
 
     if(!address) {
       throw new AppError('Adress does not exists', 404)
@@ -56,6 +57,7 @@ class AddressService {
     addressInfo.created_at = new Date(),
     addressInfo.updated_at = new Date()
 
+    this.address.splice(userIndex, 1);
     this.address.push(addressInfo);
 
     return addressInfo;

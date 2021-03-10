@@ -31,9 +31,8 @@ class UserService {
     user.email = userProps.email,
     user.phone = userProps.phone,
     user.age = userProps.age,
+    user.ethnicity = userProps.ethnicity,
     user.weight = userProps.weight,
-    // user.created_at = new Date(),
-    // user.updated_at = new Date()
 
     this.Users.push(user);
 
@@ -42,6 +41,7 @@ class UserService {
 
   async update(id: string, userProps: UserProps): Promise<User> {
     const userExists = this.Users.find(user => user.id === id);
+    const userIndex = this.Users.findIndex(id => id)
     const EmailUsed = this.Users.find(user => user.email === userProps.email);
 
     if(!userExists) {
@@ -57,11 +57,13 @@ class UserService {
     user.email = userProps.email,
     user.phone = userProps.phone,
     user.age = userProps.age,
+    user.ethnicity = userProps.ethnicity,
     user.weight = userProps.weight,
     user.created_at = new Date(),
     user.updated_at = new Date()
 
-    this.Users.push(user);
+    this.Users.splice(userIndex, 1)
+    this.Users.push(user)
 
     return user;
   }
